@@ -5,7 +5,6 @@ set -e
 BIN="bin"
 mkdir -p "${BIN}"
 kind="${BIN}/kind"
-vault="${BIN}/vault"
 cluster_name=rotate-cluster
 
 OS=$(uname | tr '[:upper:]' '[:lower:]')
@@ -56,6 +55,59 @@ setup-vault() {
 
     echo "waiting for vault to become ready after unsealing"
     kubectl wait --for=condition=Ready=true Pod/vault-0 --timeout=300s
+}
+
+apply-postgres-manifests() {
+    kubectl apply -f manifests/postgres-config.yaml
+    kubectl apply -f manifests/postgres-service.yaml
+    kubectl apply -f manifests/postgres-deployment.yaml
+    kubectl wait --for=condition=Available=true Deployment/postgres --timeout=300s
+}
+
+configure-postgres() {
+    kubectl exec "$(kubectl get pods -l app=postgres -o name)" -- sh -c "su postgres -c 'psql -c \"CREATE ROLE \\\"ro\\\" NOINHERIT;\" && psql -c \"GRANT SELECT ON ALL TABLES IN SCHEMA public TO \\\"ro\\\";\"'"
+
+    vault_token=$(jq -r ".root_token" cluster-keys.json)
+    kubectl exec vault-0 -- sh -c "echo \"${vault_token}\" | vault login -"
+    kubectl exec vault-0 -- vault secrets enable database
+
+    POSTGRES_URL=postgres.default.svc.cluster.local:5432
+    kubectl exec vault-0 -- vault write database/config/postgresql \
+        plugin_name=postgresql-database-plugin \
+        connection_url="postgresql://admin:psltest@$POSTGRES_URL/postgres?sslmode=disable" \
+        allowed_roles=readonly \
+        username="root" \
+        password="rootpassword"
+
+    kubectl exec vault-0 -- sh -c "tee /tmp/readonly.sql <<EOF
+CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}' INHERIT;
+GRANT ro TO \"{{name}}\";
+EOF"
+
+    kubectl exec vault-0 -- vault write database/roles/readonly \
+      db_name=postgresql \
+      creation_statements=@/tmp/readonly.sql \
+      default_ttl=1h \
+      max_ttl=24h
+
+    # sleep 1
+
+    kubectl exec vault-0 -- vault read database/creds/readonly
+}
+
+configure-external-secrets() {
+    vault_token=$(jq -r ".root_token" cluster-keys.json | base64)
+
+    echo "---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vault-token
+data:
+  token: ${vault_token}" | kubectl apply -f -
+
+    kubectl apply -f manifests/generator.yaml
+    kubectl apply -f manifests/external-secret.yaml
 }
 
 kind-create-test-cluster() {
@@ -122,3 +174,19 @@ echo "Operator deployed."
 echo "Setting up vault."
 
 setup-vault
+
+echo "Done setting up vault."
+
+echo "Setting up Postgres deployment."
+
+apply-postgres-manifests
+
+echo "Configuring postgres."
+
+configure-postgres
+
+echo "Postgres configured."
+
+echo "Creating external secrets manifests"
+
+configure-external-secrets

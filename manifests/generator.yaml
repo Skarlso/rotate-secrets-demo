@@ -1,0 +1,17 @@
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: VaultDynamicSecret
+metadata:
+  name: "psql-example"
+spec:
+  path: "/database/creds/readonly" ## this is how you choose which vault dynamic path to use
+  method: "GET" ## this path will only work with GETs
+  # parameters: ## no needed parameters 
+  # ...
+  provider:
+    server: "http://vault.default.svc.cluster.local:8200" ## vault url. In this case vault service on the vault namespace
+    auth:
+      # points to a secret that contains a vault token
+      # https://www.vaultproject.io/docs/auth/token
+      tokenSecretRef: ## reference to the secret holding the Vault auth token
+        name: "vault-token"
+        key: "token"
