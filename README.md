@@ -16,3 +16,5 @@ https://releases.hashicorp.com/vault/1.19.1/vault_1.19.1_darwin_amd64.zip
 ```
 curl -L https://releases.hashicorp.com/vault/1.19.1/vault_1.19.1_darwin_amd64.zip -o vault.zip && unzip vault.zip -d bin && rm vault.zip
 ```
+
+https://marpit.marp.app/directives
