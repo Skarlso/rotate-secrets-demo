@@ -25,3 +25,7 @@ https://github.com/external-secrets
 - ESO Reloader
 - Demo
 - Closing words
+
+---
+
+# What is External Secrets Operator
