@@ -65,6 +65,7 @@ apply-postgres-manifests() {
 }
 
 configure-postgres() {
+    sleep 5
     kubectl exec "$(kubectl get pods -l app=postgres -o name)" -- sh -c "su postgres -c 'psql -c \"CREATE ROLE \\\"ro\\\" NOINHERIT;\" && psql -c \"GRANT SELECT ON ALL TABLES IN SCHEMA public TO \\\"ro\\\";\"'"
 
     vault_token=$(jq -r ".root_token" cluster-keys.json)
@@ -96,7 +97,8 @@ EOF"
 }
 
 configure-external-secrets() {
-    vault_token=$(jq -r ".root_token" cluster-keys.json | base64)
+    vault_token=$(jq -r ".root_token" cluster-keys.json)
+    vault_token_encoded=$(echo -n "${vault_token}" | base64)
 
     echo "---
 apiVersion: v1
@@ -104,7 +106,7 @@ kind: Secret
 metadata:
   name: vault-token
 data:
-  token: ${vault_token}" | kubectl apply -f -
+  token: ${vault_token_encoded}" | kubectl apply -f -
 
     kubectl apply -f manifests/generator.yaml
     kubectl apply -f manifests/external-secret.yaml
