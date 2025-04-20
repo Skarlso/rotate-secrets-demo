@@ -215,11 +215,11 @@ data:
     kubectl apply -f manifests/generator.yaml
     generator_created=true
     generate_graph
-    sleep 2
+    sleep 5
     kubectl apply -f manifests/external-secret.yaml
     externalsecret_created=true
     generate_graph
-    sleep 2 # to give the graph a better visual
+    sleep 5 # to give the graph a better visual
 }
 
 kind-create-test-cluster() {
@@ -292,6 +292,8 @@ check-external-secrets-operator-deployment
 
 generate_graph
 
+sleep 5
+
 echo "Operator deployed."
 
 echo "Setting up vault."
@@ -299,6 +301,8 @@ echo "Setting up vault."
 setup-vault
 
 generate_graph
+
+sleep 5
 
 echo "Done setting up vault."
 
@@ -308,11 +312,15 @@ apply-postgres-manifests
 
 generate_graph
 
+sleep 5
+
 echo "Configuring postgres."
 
 configure-postgres
 
 generate_graph
+
+sleep 5
 
 echo "Postgres configured."
 
