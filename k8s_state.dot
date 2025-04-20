@@ -1,0 +1,25 @@
+digraph kubernetes_state {
+    style=filled;
+    rankdir=TB;
+    node [shape=box, style="rounded,filled", fontname="Arial", fontsize=12];
+    edge [fontname="Arial", fontsize=10];
+    
+    bgcolor="white";
+    
+    Kubernetes [label="Kubernetes Cluster", fillcolor="#E5F5F9", color="#2980B9"];
+    Vault [label="Vault", fillcolor="#D5F5E3", color="#27AE60"];
+    Kubernetes -> Vault [label="hosts"];
+    ESO [label="External Secrets Operator", fillcolor="#D5F5E3", color="#27AE60"];
+    Kubernetes -> ESO [label="hosts"];
+    Postgres [label="Postgres", fillcolor="#D5F5E3", color="#27AE60"];
+    Kubernetes -> Postgres [label="hosts"];
+    Vault -> Postgres [label="SQL Configuration", color="#3498DB", penwidth=2];
+    Generator [label="Generator: psql-example", fillcolor="#E8DAEF", color="#8E44AD"];
+    ESO -> Generator [label="Manages", color="#9B59B6", penwidth=2];
+    ExternalSecret [label="ExternalSecret: psql-example-es", fillcolor="#FCF3CF", color="#F1C40F"];
+    ESO -> ExternalSecret [label="Manages", color="#9B59B6", penwidth=2];
+    ExternalSecret -> Generator [label="References", color="#8E44AD", penwidth=2];
+    Generator -> Vault [label="Fetches creds from", color="#8E44AD", penwidth=2];
+    Secret [label="Secret: psql-example-for-use", fillcolor="#FDEDEC", color="#E74C3C"];
+    ExternalSecret -> Secret [label="Created", color="#F1C40F", penwidth=2];
+}

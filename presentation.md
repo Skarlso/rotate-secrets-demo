@@ -19,13 +19,34 @@ https://github.com/external-secrets
 
 - External Secrets intro
 - Rotation
-    - Why it matters
-    - What does it mean
-    - Downsides
 - ESO Reloader
 - Demo
+- Caveats
+    - Downtime
+    - Race conditions
 - Closing words
 
 ---
 
 # What is External Secrets Operator
+
+<style>
+img[alt~="center"] {
+  display: block;
+  margin: 0 auto;
+}
+</style>
+
+![width:300px center](secrets.png)
+
+<!-- ![bg](secrets.png) -->
+
+---
+
+# What are generators
+
+![width:500px center](generators_architecture.png)
+
+---
+
+# 

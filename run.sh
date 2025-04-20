@@ -59,13 +59,15 @@ setup-vault() {
 
 apply-postgres-manifests() {
     kubectl apply -f manifests/postgres-config.yaml
-    kubectl apply -f manifests/postgres-service.yaml
     kubectl apply -f manifests/postgres-deployment.yaml
     kubectl wait --for=condition=Available=true Deployment/postgres --timeout=300s
+
+    sleep 2 # give the graph a chance to look nice
+    kubectl apply -f manifests/postgres-service.yaml
 }
 
 configure-postgres() {
-    sleep 5
+    sleep 5 # make sure the database is initialized
     kubectl exec "$(kubectl get pods -l app=postgres -o name)" -- sh -c "su postgres -c 'psql -c \"CREATE ROLE \\\"ro\\\" NOINHERIT;\" && psql -c \"GRANT SELECT ON ALL TABLES IN SCHEMA public TO \\\"ro\\\";\"'"
 
     vault_token=$(jq -r ".root_token" cluster-keys.json)
@@ -109,7 +111,9 @@ data:
   token: ${vault_token_encoded}" | kubectl apply -f -
 
     kubectl apply -f manifests/generator.yaml
+    sleep 2 # to give the graph a better visual
     kubectl apply -f manifests/external-secret.yaml
+    sleep 5 # to give the graph a better visual
 }
 
 kind-create-test-cluster() {
@@ -151,10 +155,6 @@ check-external-secrets-operator-deployment() {
     spinner $!
 }
 
-apply-store-manifest() {
-    echo "applying store manifest"
-}
-
 echo "Starting environment setup for external-secrets-operator secrets rotation demo..."
 
 download-kind
@@ -177,18 +177,26 @@ echo "Setting up vault."
 
 setup-vault
 
+sleep 2 # give a chance for the graph to catch up
+
 echo "Done setting up vault."
 
 echo "Setting up Postgres deployment."
 
 apply-postgres-manifests
 
+sleep 2 # give a chance for the graph to catch up
+
 echo "Configuring postgres."
 
 configure-postgres
+
+sleep 2 #give a chance for the graph to catch up
 
 echo "Postgres configured."
 
 echo "Creating external secrets manifests"
 
 configure-external-secrets
+
+# sleep 2 -> give a chance for the graph to catch up

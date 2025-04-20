@@ -18,3 +18,7 @@ curl -L https://releases.hashicorp.com/vault/1.19.1/vault_1.19.1_darwin_amd64.zi
 ```
 
 https://marpit.marp.app/directives
+
+# TODO
+
+- Consider bringing the two scripts together for better graph control.
