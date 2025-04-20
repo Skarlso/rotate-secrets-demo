@@ -16,10 +16,11 @@ digraph kubernetes_state {
     Vault -> Postgres [label="SQL Configuration", color="#3498DB", penwidth=2];
     Generator [label="Generator: psql-example", fillcolor="#E8DAEF", color="#8E44AD"];
     ESO -> Generator [label="Manages", color="#9B59B6", penwidth=2];
+    Generator -> Vault [label="Fetches creds from", color="#8E44AD", penwidth=2];
     ExternalSecret [label="ExternalSecret: psql-example-es", fillcolor="#FCF3CF", color="#F1C40F"];
     ESO -> ExternalSecret [label="Manages", color="#9B59B6", penwidth=2];
     ExternalSecret -> Generator [label="References", color="#8E44AD", penwidth=2];
-    Generator -> Vault [label="Fetches creds from", color="#8E44AD", penwidth=2];
     Secret [label="Secret: psql-example-for-use", fillcolor="#FDEDEC", color="#E74C3C"];
     ExternalSecret -> Secret [label="Created", color="#F1C40F", penwidth=2];
+    ExternalSecret -> ExternalSecret [label="Reconciles in interval", color="#9B59B6", penwidth=2];
 }
