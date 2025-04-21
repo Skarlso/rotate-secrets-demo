@@ -1,3 +1,4 @@
 bin
 vault.zip
 cluster-keys.json
+.DS_Store
