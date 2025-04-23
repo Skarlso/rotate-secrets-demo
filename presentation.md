@@ -92,6 +92,32 @@ img[alt~="center"] {
 
 ---
 
+# Different Generator Types
+<style scoped>
+section {
+    font-size: 30px;
+}
+</style>
+
+- Azure Container Registry
+- AWS Elastic Container Registry
+- AWS STS Session Token
+- Google Container Registry
+- Quay
+- Vault Dynamic Secret
+- Password
+- Webhook ( _any_ type )
+- Github
+- UUID
+
+---
+
+# What we are trying to achieve
+
+![width:700px center](demo-arch.png)
+
+---
+
 # Demo
 
 ---
