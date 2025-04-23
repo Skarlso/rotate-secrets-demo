@@ -293,8 +293,6 @@ check-external-secrets-operator-deployment
 
 generate_graph
 
-read -n 1 -s -r -p "Press any key to continue"
-
 echo "Operator deployed."
 
 echo "Setting up vault."
@@ -302,8 +300,6 @@ echo "Setting up vault."
 setup-vault
 
 generate_graph
-
-read -n 1 -s -r -p "Press any key to continue"
 
 echo "Done setting up vault."
 
