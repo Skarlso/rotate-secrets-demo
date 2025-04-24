@@ -143,7 +143,7 @@ setup-vault() {
         sleep 2
     done
 
-    kubectl wait --for=jsonpath='{.status.phase}'=Running pod/vault-0
+    kubectl wait --for=jsonpath='{.status.phase}'=Running pod/vault-0 --timeout=300s
 
     kubectl exec vault-0 -- vault operator init \
         -key-shares=1 \

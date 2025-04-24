@@ -9,25 +9,44 @@ style: |
 ---
 
 # Automatic Secret rotation with ESO
-![bg right:50% w:400](en.png)
+<style scoped>
+section {
+    font-size: 30px;
+}
+</style>
+![bg right:50% w:400](qr-code.png)
 Gergely Brautigam 
 
 https://github.com/Skarlso
 https://gergelybrautigam.com 
 https://github.com/external-secrets
 
+QR code link to repository ->
+
 ---
 
 # Agenda
 
+- Why rotation is important
 - External Secrets intro
 - Rotation
-- ESO Reloader
 - Demo
+- ESO Reloader Demo
 - Caveats
     - Downtime
     - Race conditions
 - Closing words
+
+---
+
+# Why is it important to rotate secrets?
+
+- the longer the token the longer the expouser and the chain of custody
+- uber 2022 where a mobile device was compromised
+- dependabot exploit of 2023
+- cloudflare outage 2023. they rotated, however, due to human error some of the tokens
+got exposed and they got inflitrated
+- there are many many more...
 
 ---
 
@@ -119,6 +138,14 @@ section {
 ---
 
 # Demo
+
+---
+
+# Drawbacks
+
+- No second secret rotation process ( where you switch over to a second secret instead of updating
+the current one )
+- Race condition can occur when rotation happens at the wrong time ( retry )
 
 ---
 
