@@ -139,6 +139,14 @@ section {
 
 # Demo
 
+Rotation demo
+
+---
+
+# Reloader
+
+Demo if time allows
+
 ---
 
 # Drawbacks
