@@ -1,5 +1,7 @@
 # rotate-secrets-demo
 
+origin blog post by Lucas https://dev.to/canelasevero/true-secrets-auto-rotation-with-eso-and-vault-1g4o
+
 Rotate Secrets with external-secrets-operator demo
 
 This repository contains code for KCD Budapest presentation for rotating secrets using external-secrets-operator.
